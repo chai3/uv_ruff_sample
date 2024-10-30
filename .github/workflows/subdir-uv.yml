@@ -8,6 +8,9 @@ on:
     paths:
       - "subdir/**"
   workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   subdir-uv-job:
     runs-on: ubuntu-latest
@@ -34,20 +37,21 @@ jobs:
           python-version-file: "subdir/.python-version"
       - name: Install the project
         run: uv sync --all-extras --dev
-      - name: Run Ruff
+      - name: Run Ruff(all)
         # https://docs.astral.sh/ruff/integrations/#github-actions
         run: uv run ruff check --output-format=github .
-        continue-on-error: true
-      - name: Run Ruff changed files(otameshi)
+      - name: Run Ruff(only changes)
+        if: ${{ !cancelled() }}
         uses: astral-sh/ruff-action@v1
-        continue-on-error: true
         with:
           changed-files: true
           src: subdir
       - name: Run pytest
+        if: ${{ !cancelled() }}
         run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
         continue-on-error: true
       - name: Pytest coverage comment
+        if: ${{ !cancelled() }}
         uses: MishaKav/pytest-coverage-comment@main
         continue-on-error: true
         with:
