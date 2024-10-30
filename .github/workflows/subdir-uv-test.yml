@@ -33,5 +33,5 @@ jobs:
       - name: Run tests
         # For example, using `pytest`
         run: uv run pytest
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
 
