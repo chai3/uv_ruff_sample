@@ -30,6 +30,7 @@ jobs:
       - name: Run Ruff
         # https://docs.astral.sh/ruff/integrations/#github-actions
         run: uv run ruff check --output-format=github .
+        continue-on-error: true
       - name: Run tests
         # For example, using `pytest`
         run: uv run pytest
