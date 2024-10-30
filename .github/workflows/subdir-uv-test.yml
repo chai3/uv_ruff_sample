@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  # contents: write
-  # checks: write
+  contents: write
+  checks: write
   pull-requests: write # for pytest-coverage-comment
 
 jobs:
