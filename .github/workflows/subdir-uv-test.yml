@@ -13,7 +13,7 @@ permissions:
   # for pytest-coverage-comment
   contents: write
   checks: write
-  pull-requests: write 
+  pull-requests: write
 
 jobs:
   subdir-uv-test-job:
@@ -24,7 +24,8 @@ jobs:
       run:
         working-directory: subdir
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
@@ -38,12 +39,18 @@ jobs:
       - name: Run Ruff
         # https://docs.astral.sh/ruff/integrations/#github-actions
         run: uv run ruff check --output-format=github .
+      - name: Run Ruff changed files(otameshi)
+        if: ${{ !cancelled() }}
+        uses: astral-sh/ruff-action@v1
+        with:
+          changed-files: true
+          src: subdir
       - name: Run tests
         if: ${{ !cancelled() }}
         run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
       - name: Pytest coverage comment
         if: ${{ !cancelled() }}
-        uses: MishaKav/pytest-coverage-comment@main
+        uses: MishaKav/pytest-coverage-comment@1
         with:
           pytest-coverage-path: subdir/pytest-coverage.txt
           junitxml-path: subdir/pytest.xml
