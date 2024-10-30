@@ -1,0 +1,35 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "subdir/**"
+  pull_request:
+    paths:
+      - "subdir/**"
+
+jobs:
+  subdir-uv-test-job:
+    # https://docs.astral.sh/uv/guides/integration/github/
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: subdir
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Install the project
+        run: uv sync --all-extras --dev
+      - name: Run Ruff
+        # https://docs.astral.sh/ruff/integrations/#github-actions
+        run: ruff check --output-format=github .
+      - name: Run tests
+        # For example, using `pytest`
+        run: uv run pytest tests
