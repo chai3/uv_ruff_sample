@@ -13,8 +13,9 @@ dependencies = [
     "langserve[all]>=0.3.0",
 ]
 
-[tool.uv]
-dev-dependencies = ["pytest>=8.3.3", "pytest-cov>=5.0.0", "ruff>=0.7.0"]
+[dependency-groups]
+dev = ["ruff>=0.7.0", "pytest>=8.3.3", "pytest-cov>=5.0.0"]
+
 
 [tool.ruff]
 # default(Black) is 88, PEP8 is 79, Java is 100, Github is 119
