@@ -10,9 +10,10 @@ on:
   workflow_dispatch:
 
 permissions:
+  # for pytest-coverage-comment
   contents: write
   checks: write
-  pull-requests: write # for pytest-coverage-comment
+  pull-requests: write 
 
 jobs:
   subdir-uv-test-job:
@@ -38,9 +39,10 @@ jobs:
         # https://docs.astral.sh/ruff/integrations/#github-actions
         run: uv run ruff check --output-format=github .
       - name: Run tests
-        run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
         if: ${{ !cancelled() }}
+        run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
       - name: Pytest coverage comment
+        if: ${{ !cancelled() }}
         uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-coverage-path: ./pytest-coverage.txt
