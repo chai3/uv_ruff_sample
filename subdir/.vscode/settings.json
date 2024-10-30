@@ -1,0 +1,24 @@
+{
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  },
+  "mypy-type-checker.severity": {
+    "error": "Warning" // errorによる赤線は過剰
+  },
+  "pylint.enabled": false,
+  "python.testing.pytestArgs": [
+    // pyproject.toml も合わせて変更すること
+    "--doctest-modules",
+    "--cov",
+    "--cov-branch",
+    "tests",
+    "uv_ruff", // for doctest
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+}
