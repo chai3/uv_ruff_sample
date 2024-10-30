@@ -1,0 +1,29 @@
+on:
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  super-linter-job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: read
+      # for super-linter
+      statuses: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # super-linter needs the full git history
+          fetch-depth: 0
+      - name: Super-Linter
+        # https://github.com/super-linter/super-linter
+        uses: super-linter/super-linter/slim@v7
+        env:
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+
