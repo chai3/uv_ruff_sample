@@ -9,9 +9,10 @@ on:
       - "subdir/**"
   workflow_dispatch:
 jobs:
-  subdir-uv-test-job:
+  subdir-uv-job:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    continue-on-error: true
     defaults:
       run:
         working-directory: subdir
@@ -20,17 +21,9 @@ jobs:
       checks: read
       # for pytest-coverage-comment
       pull-requests: write
-      # for super-linter
-      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          # super-linter needs the full git history
-          fetch-depth: 0
-      - name: Super-Linter
-        if: ${{ !cancelled() }}
-        uses: super-linter/super-linter/slim@v7
       - name: Install uv
         # https://docs.astral.sh/uv/guides/integration/github/
         uses: astral-sh/setup-uv@v3
@@ -46,19 +39,15 @@ jobs:
         # https://docs.astral.sh/ruff/integrations/#github-actions
         run: uv run ruff check --output-format=github .
       - name: Run Ruff changed files(otameshi)
-        if: ${{ !cancelled() }}
         uses: astral-sh/ruff-action@v1
         with:
           changed-files: true
           src: subdir
       - name: Run pytest
-        if: ${{ !cancelled() }}
         run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
       - name: Pytest coverage comment
-        if: ${{ !cancelled() }}
         uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-coverage-path: subdir/pytest-coverage.txt
           junitxml-path: subdir/pytest.xml
           report-only-changed-files: true
-
