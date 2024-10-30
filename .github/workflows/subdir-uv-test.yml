@@ -45,5 +45,5 @@ jobs:
         if: ${{ !cancelled() }}
         uses: MishaKav/pytest-coverage-comment@main
         with:
-          pytest-coverage-path: ./pytest-coverage.txt
-          junitxml-path: ./pytest.xml
+          pytest-coverage-path: subdir/pytest-coverage.txt
+          junitxml-path: subdir/pytest.xml
