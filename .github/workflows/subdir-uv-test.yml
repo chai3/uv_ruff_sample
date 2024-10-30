@@ -7,10 +7,13 @@ on:
   pull_request:
     paths:
       - "subdir/**"
+  workflow_dispatch:
+
 permissions:
   # contents: write
   # checks: write
   pull-requests: write # for pytest-coverage-comment
+
 jobs:
   subdir-uv-test-job:
     # https://docs.astral.sh/uv/guides/integration/github/
