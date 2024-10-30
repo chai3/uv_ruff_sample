@@ -9,24 +9,30 @@ on:
       - "subdir/**"
   workflow_dispatch:
 
-permissions:
-  # for pytest-coverage-comment
-  contents: write
-  checks: write
-  pull-requests: write
 
 jobs:
   subdir-uv-test-job:
-    # https://docs.astral.sh/uv/guides/integration/github/
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
       run:
         working-directory: subdir
+    permissions:
+      contents: read
+      checks: read
+      # for pytest-coverage-comment
+      pull-requests: write
+      # for super-linter
+      statuses: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # super-linter needs the full git history
+          fetch-depth: 0
       - name: Install uv
+        # https://docs.astral.sh/uv/guides/integration/github/
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
@@ -54,3 +60,10 @@ jobs:
         with:
           pytest-coverage-path: subdir/pytest-coverage.txt
           junitxml-path: subdir/pytest.xml
+          report-only-changed-files: true
+      - name: Super-linter
+        if: ${{ !cancelled() }}
+        uses: super-linter/super-linter@v7
+        env:
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
