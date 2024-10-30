@@ -20,4 +20,8 @@ jobs:
           # super-linter needs the full git history
           fetch-depth: 0
       - name: Super-Linter
+        # https://github.com/super-linter/super-linter
         uses: super-linter/super-linter/slim@v7
+        env:
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

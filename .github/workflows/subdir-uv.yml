@@ -12,7 +12,6 @@ jobs:
   subdir-uv-job:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    continue-on-error: true
     defaults:
       run:
         working-directory: subdir
@@ -38,15 +37,19 @@ jobs:
       - name: Run Ruff
         # https://docs.astral.sh/ruff/integrations/#github-actions
         run: uv run ruff check --output-format=github .
+        continue-on-error: true
       - name: Run Ruff changed files(otameshi)
         uses: astral-sh/ruff-action@v1
+        continue-on-error: true
         with:
           changed-files: true
           src: subdir
       - name: Run pytest
         run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
+        continue-on-error: true
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@main
+        continue-on-error: true
         with:
           pytest-coverage-path: subdir/pytest-coverage.txt
           junitxml-path: subdir/pytest.xml
