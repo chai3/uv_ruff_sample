@@ -4,9 +4,9 @@ on:
       - main
     paths:
       - "subdir/**"
-    push:
-      paths:
-        - ".github/workflows/**"
+  push:
+    paths:
+      - ".github/workflows/**"
   pull_request:
     paths:
       - "subdir/**"
