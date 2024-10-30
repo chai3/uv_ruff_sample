@@ -8,8 +8,6 @@ on:
     paths:
       - "subdir/**"
   workflow_dispatch:
-
-
 jobs:
   subdir-uv-test-job:
     runs-on: ubuntu-latest
@@ -24,22 +22,21 @@ jobs:
       pull-requests: write
       # for super-linter
       statuses: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           # super-linter needs the full git history
           fetch-depth: 0
-      - name: Super-linter
+      - name: Super-Linter
         if: ${{ !cancelled() }}
-        uses: super-linter/super-linter@v7
+        uses: super-linter/super-linter/slim@v7
       - name: Install uv
         # https://docs.astral.sh/uv/guides/integration/github/
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-      - name: "Set up Python"
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: "subdir/.python-version"
@@ -54,7 +51,7 @@ jobs:
         with:
           changed-files: true
           src: subdir
-      - name: Run tests
+      - name: Run pytest
         if: ${{ !cancelled() }}
         run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
       - name: Pytest coverage comment
