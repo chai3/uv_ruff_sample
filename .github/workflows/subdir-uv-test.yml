@@ -31,6 +31,9 @@ jobs:
         with:
           # super-linter needs the full git history
           fetch-depth: 0
+      - name: Super-linter
+        if: ${{ !cancelled() }}
+        uses: super-linter/super-linter@v7
       - name: Install uv
         # https://docs.astral.sh/uv/guides/integration/github/
         uses: astral-sh/setup-uv@v3
@@ -61,9 +64,4 @@ jobs:
           pytest-coverage-path: subdir/pytest-coverage.txt
           junitxml-path: subdir/pytest.xml
           report-only-changed-files: true
-      - name: Super-linter
-        if: ${{ !cancelled() }}
-        uses: super-linter/super-linter@v7
-        env:
-          # To report GitHub Actions status checks
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
