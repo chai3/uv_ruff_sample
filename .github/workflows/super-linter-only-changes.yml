@@ -29,9 +29,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           CREATE_LOG_FILE: true
-          # 	super-linter.log
           SAVE_SUPER_LINTER_OUTPUT: true
       - name: PR comment with file
+        if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: msg
@@ -39,6 +39,7 @@ jobs:
           comment_tag: super-linter-output-summary
           mode: upsert
       - name: PR comment with file
+        if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: msg2
