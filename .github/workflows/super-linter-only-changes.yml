@@ -32,7 +32,7 @@ jobs:
           SAVE_SUPER_LINTER_OUTPUT: true
       - name: Super-Linter chmod log
         if: ${{ !cancelled() }}
-          run: sudo chmod -R 777 super-linter.log
+        run: sudo chmod -R 777 super-linter.log
       - name: Super-Linter PR comment
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
