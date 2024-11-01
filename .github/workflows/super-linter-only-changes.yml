@@ -35,7 +35,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: msg21
-          file-path: /tmp/super-linter-output/super-linter-summary.md
+          file-path: ${{ github.workspace }}/super-linter-output/super-linter-summary.md
           comment-tag: super-linter-output-summary
           mode: upsert
       - name: PR comment with file
@@ -43,7 +43,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: msg22 ${{ github.workspace }}
-          file-path: /tmp/super-linter.log
+          file-path: ${{ github.workspace }}/super-linter.log
           comment-tag: super-linter-log
           mode: upsert
       - name: PR comment with file2
@@ -51,7 +51,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: msg24 ${{ github.workspace }}
-          file-path: LICENSE
+          file-path: ${{ github.workspace }}/LICENSE
           comment-tag: license2
           mode: upsert
       - name: run
@@ -62,8 +62,8 @@ jobs:
           ls -la
           ls -la ${{ github.workspace }}
           ls -la /tmp
-          ls -la /tmp/super-linter-output
-          cat /tmp/super-linter-output/super-linter-summary.md
+          ls -la super-linter-output
+          cat super-linter-output/super-linter-summary.md
           echo end
 
 
