@@ -34,7 +34,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: msg21
           file-path: ${{ github.workspace }}/super-linter-output/super-linter-summary.md
           comment-tag: super-linter-output-summary
           mode: upsert
@@ -42,7 +41,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: msg22 ${{ github.workspace }}
           file-path: ${{ github.workspace }}/super-linter.log
           comment-tag: super-linter-log
           mode: upsert
@@ -50,7 +48,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: msg24 ${{ github.workspace }}
           file-path: ${{ github.workspace }}/LICENSE
           comment-tag: license2
           mode: upsert
