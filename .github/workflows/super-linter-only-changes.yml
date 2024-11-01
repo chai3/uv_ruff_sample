@@ -1,0 +1,69 @@
+on:
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  super-linter-job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: read
+      # for super-linter
+      statuses: write
+      # for actions-comment-pull-request
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # super-linter needs the full git history
+          fetch-depth: 0
+      - name: Super-Linter
+        # https://github.com/super-linter/super-linter
+        uses: super-linter/super-linter/slim@v7
+        env:
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+          CREATE_LOG_FILE: true
+          SAVE_SUPER_LINTER_OUTPUT: true
+      - name: Super-Linter chmod log
+        if: ${{ !cancelled() }}
+        run: sudo chmod -R 777 super-linter.log
+      - name: Super-Linter PR comment
+        if: ${{ !cancelled() }}
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: ${{ github.workspace }}/super-linter-output/super-linter-summary.md
+          comment-tag: super-linter-output-summary
+          mode: upsert
+      # - name: PR comment with file
+      #   if: ${{ !cancelled() }}
+      #   uses: thollander/actions-comment-pull-request@v3
+      #   with:
+      #     file-path: ${{ github.workspace }}/super-linter.log
+      #     comment-tag: super-linter-log
+      #     mode: upsert
+      # - name: PR comment with file2
+      #   if: ${{ !cancelled() }}
+      #   uses: thollander/actions-comment-pull-request@v3
+      #   with:
+      #     file-path: ${{ github.workspace }}/LICENSE
+      #     comment-tag: license2
+      #     mode: upsert
+      # - name: run
+      #   if: ${{ !cancelled() }}
+      #   run : |
+      #     set -x
+      #     pwd
+      #     ls -la
+      #     ls -la ${{ github.workspace }}
+      #     ls -la /tmp
+      #     ls -la super-linter-output
+      #     cat super-linter-output/super-linter-summary.md
+      #     echo end
+
+

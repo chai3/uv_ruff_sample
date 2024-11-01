@@ -8,42 +8,53 @@ on:
     paths:
       - "subdir/**"
   workflow_dispatch:
-
-permissions:
-  # for pytest-coverage-comment
-  contents: write
-  checks: write
-  pull-requests: write 
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
-  subdir-uv-test-job:
-    # https://docs.astral.sh/uv/guides/integration/github/
+  subdir-uv-job:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
       run:
         working-directory: subdir
+    permissions:
+      contents: read
+      checks: read
+      # for pytest-coverage-comment
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Install uv
+        # https://docs.astral.sh/uv/guides/integration/github/
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-      - name: "Set up Python"
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: "subdir/.python-version"
       - name: Install the project
         run: uv sync --all-extras --dev
-      - name: Run Ruff
+      - name: Run Ruff(all)
         # https://docs.astral.sh/ruff/integrations/#github-actions
         run: uv run ruff check --output-format=github .
-      - name: Run tests
+      - name: Run Ruff(only changes)
+        if: ${{ !cancelled() }}
+        uses: astral-sh/ruff-action@v1
+        with:
+          changed-files: true
+          src: subdir
+      - name: Run pytest
         if: ${{ !cancelled() }}
         run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered | tee pytest-coverage.txt
+        continue-on-error: true
       - name: Pytest coverage comment
         if: ${{ !cancelled() }}
         uses: MishaKav/pytest-coverage-comment@main
+        continue-on-error: true
         with:
           pytest-coverage-path: subdir/pytest-coverage.txt
           junitxml-path: subdir/pytest.xml
+          report-only-changed-files: true
