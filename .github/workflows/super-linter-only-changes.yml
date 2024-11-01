@@ -21,9 +21,6 @@ jobs:
         with:
           # super-linter needs the full git history
           fetch-depth: 0
-      - name: Super-Linter rm
-        if: ${{ !cancelled() }}
-        run: rm -Rf super-linter.log super-linter-output
       - name: Super-Linter
         # https://github.com/super-linter/super-linter
         uses: super-linter/super-linter/slim@v7
@@ -33,40 +30,40 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           CREATE_LOG_FILE: true
           SAVE_SUPER_LINTER_OUTPUT: true
-      # - name: Super-Linter chmod log
-      #   if: ${{ !cancelled() }}
-      #     run: sudo chmod -R 777 super-linter.log super-linter-output
-      - name: PR comment with file
+      - name: Super-Linter chmod log
+        if: ${{ !cancelled() }}
+          run: sudo chmod -R 777 super-linter.log
+      - name: Super-Linter PR comment
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           file-path: ${{ github.workspace }}/super-linter-output/super-linter-summary.md
           comment-tag: super-linter-output-summary
           mode: upsert
-      - name: PR comment with file
-        if: ${{ !cancelled() }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          file-path: ${{ github.workspace }}/super-linter.log
-          comment-tag: super-linter-log
-          mode: upsert
-      - name: PR comment with file2
-        if: ${{ !cancelled() }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          file-path: ${{ github.workspace }}/LICENSE
-          comment-tag: license2
-          mode: upsert
-      - name: run
-        if: ${{ !cancelled() }}
-        run : |
-          set -x
-          pwd
-          ls -la
-          ls -la ${{ github.workspace }}
-          ls -la /tmp
-          ls -la super-linter-output
-          cat super-linter-output/super-linter-summary.md
-          echo end
+      # - name: PR comment with file
+      #   if: ${{ !cancelled() }}
+      #   uses: thollander/actions-comment-pull-request@v3
+      #   with:
+      #     file-path: ${{ github.workspace }}/super-linter.log
+      #     comment-tag: super-linter-log
+      #     mode: upsert
+      # - name: PR comment with file2
+      #   if: ${{ !cancelled() }}
+      #   uses: thollander/actions-comment-pull-request@v3
+      #   with:
+      #     file-path: ${{ github.workspace }}/LICENSE
+      #     comment-tag: license2
+      #     mode: upsert
+      # - name: run
+      #   if: ${{ !cancelled() }}
+      #   run : |
+      #     set -x
+      #     pwd
+      #     ls -la
+      #     ls -la ${{ github.workspace }}
+      #     ls -la /tmp
+      #     ls -la super-linter-output
+      #     cat super-linter-output/super-linter-summary.md
+      #     echo end
 
 
