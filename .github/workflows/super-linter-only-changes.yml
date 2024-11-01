@@ -55,6 +55,7 @@ jobs:
           comment-tag: license2
           mode: upsert
       - name: run
+        if: ${{ !cancelled() }}
         run : |
           set -x
           pwd
@@ -62,4 +63,6 @@ jobs:
           ls -la ${{ github.workspace }}
           ls -la /tmp
           ls -la /tmp/lint
+          echo end
+
 
