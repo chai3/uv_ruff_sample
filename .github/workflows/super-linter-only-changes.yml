@@ -33,9 +33,9 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           CREATE_LOG_FILE: true
           SAVE_SUPER_LINTER_OUTPUT: true
-      - name: Super-Linter chmod log
-        if: ${{ !cancelled() }}
-          run: sudo chmod -R 777 super-linter.log super-linter-output
+      # - name: Super-Linter chmod log
+      #   if: ${{ !cancelled() }}
+      #     run: sudo chmod -R 777 super-linter.log super-linter-output
       - name: PR comment with file
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
