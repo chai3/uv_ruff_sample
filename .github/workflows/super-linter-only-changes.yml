@@ -35,14 +35,14 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: msg
-          filePath: /tmp/lint/super-linter-output/super-linter-summary.md
-          comment_tag: super-linter-output-summary
+          file-path: /tmp/lint/super-linter-output/super-linter-summary.md
+          comment-tag: super-linter-output-summary
           mode: upsert
       - name: PR comment with file
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: msg2
-          filePath: /tmp/lint/super-linter.log
-          comment_tag: super-linter-log
+          file-path: /tmp/lint/super-linter.log
+          comment-tag: super-linter-log
           mode: upsert
