@@ -46,14 +46,6 @@ jobs:
           file-path: ${{ github.workspace }}/super-linter.log
           comment-tag: super-linter-log
           mode: upsert
-      - name: PR comment with file
-        if: ${{ !cancelled() }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          message: msg23 ${{ github.workspace }}
-          filePath: LICENSE
-          comment-tag: license
-          mode: upsert
       - name: PR comment with file2
         if: ${{ !cancelled() }}
         uses: thollander/actions-comment-pull-request@v3
@@ -62,3 +54,12 @@ jobs:
           file-path: LICENSE
           comment-tag: license2
           mode: upsert
+      - name: run
+        run : |
+          set -x
+          pwd
+          ls -la
+          ls -la ${{ github.workspace }}
+          ls -la /tmp
+          ls -la /tmp/lint
+
